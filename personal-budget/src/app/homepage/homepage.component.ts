@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import Chart from 'chart.js/auto';
 
+
 @Component({
   selector: 'pb-homepage',
   templateUrl: './homepage.component.html',
@@ -9,10 +10,12 @@ import Chart from 'chart.js/auto';
 })
 export class HomepageComponent implements OnInit{
 
+  public data : any[] = []
+  public labels : any[] = []
   public datasource = {
     datasets: [
         {
-          data: [],
+          data: this.data,
           backgroundcolor: [
             '#ffcd56',
             '#ff0000',
@@ -45,11 +48,10 @@ export class HomepageComponent implements OnInit{
   ngOnInit(): void {
       this.http.get('/budget')
       .subscribe((res: any) => {
-        console.log(res);
         for(var i=0; i <res.myBudget.length;i++)
                  {
                      this.datasource.datasets[0].data[i] = res.myBudget[i].budget;
-                     this.datasource.labels[i] = res.data.myBudget[i].title;
+                     this.datasource.labels[i] = res.myBudget[i].title;
                      
                  }
                  this.createChart();
@@ -58,7 +60,7 @@ export class HomepageComponent implements OnInit{
 
   createChart()
          {
-             var ctx = document.getElementById("myChart");
+             var ctx = document.getElementById("myChart") as HTMLCanvasElement;
              var myPieChart = new Chart(ctx, {
                  type: 'pie',
                  data: this.datasource
